@@ -312,7 +312,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
     }
+    .archive-item:hover { border-color: var(--gold-light); box-shadow: 0 4px 20px rgba(200,169,110,0.15); }
+    .archive-item:active { transform: scale(0.98); }
+    .archive-item.active { border-color: var(--gold); background: var(--cream); }
     .archive-date { font-size: 0.8rem; font-weight: 600; color: var(--ink); }
     .archive-ref {
       font-family: 'Cormorant Garamond', Georgia, serif;
@@ -322,6 +328,27 @@
       margin-left: 0.4rem;
     }
     .archive-theme { font-size: 0.68rem; color: var(--accent); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+    .archive-item .archive-arrow {
+      font-size: 0.9rem; color: var(--gold); margin-left: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+    .archive-item:hover .archive-arrow { transform: translateX(3px); }
+    .back-to-today {
+      display: none; align-items: center; justify-content: center; gap: 0.5rem;
+      background: var(--gold); color: var(--white); border: none; border-radius: 2rem;
+      padding: 0.7rem 1.6rem; font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em; cursor: pointer;
+      margin: 0 auto 1.4rem; transition: all 0.2s ease;
+      box-shadow: 0 3px 12px rgba(200,169,110,0.3);
+    }
+    .back-to-today:hover { background: var(--gold-dark); box-shadow: 0 4px 16px rgba(200,169,110,0.45); }
+    .back-to-today.visible { display: flex; }
+    .viewing-banner {
+      display: none; text-align: center; padding: 0.5rem 1rem;
+      background: var(--cream-dark); border-radius: 8px; margin-bottom: 1rem;
+      font-size: 0.78rem; color: var(--ink-muted); font-style: italic;
+    }
+    .viewing-banner.visible { display: block; }
 
     .install-hint {
       background: var(--white);
@@ -381,6 +408,8 @@
       <br><button class="dismiss-hint" onclick="document.getElementById('installHint').style.display='none'">Got it</button>
     </div>
 
+    <button class="back-to-today" id="backToToday" onclick="showToday()">&#8592; Back to Today's Devotional</button>
+    <div class="viewing-banner" id="viewingBanner"></div>
     <div id="devotionalContent"></div>
 
     <div class="gallery-section">
@@ -465,17 +494,18 @@
         prayer: `Lord, thank You for the promise that generosity leads to abundance, not scarcity. Open our eyes to the needs around us and give us the courage to pour into others without keeping score. Remind us that as we refresh those around us, You are faithful to refresh us in return. In Jesus\u2019 name, Amen.`
       },
       archive: [
-        { date: "2026-03-02", ref: "2 Corinthians 9:7", theme: "Generosity" },
-        { date: "2026-03-01", ref: "Proverbs 3:5-6", theme: "Faith & Trust" },
-        { date: "2026-02-28", ref: "Joshua 1:9", theme: "Courage" },
-        { date: "2026-02-27", ref: "Romans 8:28", theme: "Purpose" },
-        { date: "2026-02-26", ref: "Psalm 46:10", theme: "Stillness" },
-        { date: "2026-02-25", ref: "James 1:5", theme: "Wisdom" },
+        { date: "2026-03-02", theme: "Generosity", verse_ref: "2 Corinthians 9:7", verse_html: `<p>You must each decide in your heart how much to give. And don\u2019t give reluctantly or in response to pressure. \u201cFor God loves a person who gives cheerfully.\u201d</p>`, context: `Paul wrote 2 Corinthians around AD 55\u201356 from Macedonia, addressing the church at Corinth about a financial collection for impoverished believers in Jerusalem. The Greek word for \u201ccheerful\u201d (hilaros) is the root of our English word \u201chilarious\u201d \u2014 Paul envisions giving that is joyful, almost exuberant. This was countercultural in a Greco-Roman world where patronage and giving were often tied to social obligation and public honor.`, takeaway: `Generosity is an attitude before it is an action. God isn\u2019t looking at the dollar amount \u2014 He\u2019s looking at the heart behind it. When you give from a place of joy rather than guilt or obligation, it transforms both the giver and the receiver.`, reflection: `When was the last time you gave something \u2014 time, money, attention \u2014 and genuinely felt joy in the giving rather than obligation?`, application: `The next time you\u2019re prompted to give today \u2014 whether it\u2019s a tip, a donation, or simply your time \u2014 pause and check your heart posture before you act. Choose cheerfulness.`, prayer: `Father, teach us to be cheerful givers. Remove the grip of obligation and replace it with genuine joy when we have the opportunity to bless others. Let our generosity reflect Your boundless grace toward us. In Jesus\u2019 name, Amen.` },
+        { date: "2026-03-01", theme: "Faith & Trust", verse_ref: "Proverbs 3:5-6", verse_html: `<p>Trust in the <span style="font-variant:small-caps">Lord</span> with all your heart; do not depend on your own understanding.</p><p>Seek his will in all you do, and he will show you which path to take.</p>`, context: `Solomon penned this proverb as fatherly instruction around 970\u2013930 BC. The Hebrew word for \u201ctrust\u201d (batach) means to lie face down \u2014 a posture of complete vulnerability and surrender. \u201cAll your heart\u201d in Hebrew thought encompasses mind, will, and emotions \u2014 the entire inner person.`, takeaway: `Trusting God is not passive \u2014 it\u2019s an active decision to surrender your plans and lean into His direction, especially when the path forward isn\u2019t clear. It requires humility to admit that your own understanding has limits.`, reflection: `What decision or situation are you currently trying to control that might benefit from releasing your grip and trusting God\u2019s direction?`, application: `Write down one thing you\u2019re anxious about or trying to figure out on your own. Physically set the paper aside and pray, \u201cGod, I\u2019m trusting You with this today.\u201d`, prayer: `Lord, we confess that we often lean on our own understanding instead of trusting You fully. Give us the faith to surrender our plans to Your will. Guide our steps today and remind us that Your path is always the right one. In Jesus\u2019 name, Amen.` },
+        { date: "2026-02-28", theme: "Courage", verse_ref: "Joshua 1:9", verse_html: `<p>This is my command\u2014be strong and courageous! Do not be afraid or discouraged. For the <span style="font-variant:small-caps">Lord</span> your God is with you wherever you go.</p>`, context: `God spoke these words directly to Joshua around 1406 BC as Joshua prepared to lead Israel into the Promised Land after Moses\u2019 death. The Hebrew for \u201cstrong and courageous\u201d (chazaq ve\u2019ematz) was a military charge \u2014 a commissioning for battle. Joshua faced fortified cities, hostile nations, and the impossible task of filling Moses\u2019 shoes.`, takeaway: `Courage isn\u2019t the absence of fear \u2014 it\u2019s moving forward despite it because you know God is with you. The command to \u201cnot be afraid\u201d is paired with a promise: God\u2019s presence goes wherever you go.`, reflection: `What is one area of your life where fear is holding you back from stepping into what God may be calling you toward?`, application: `Identify one thing you\u2019ve been avoiding out of fear or uncertainty. Take one small step toward it today, even if it\u2019s just a conversation or a plan.`, prayer: `God, give us the courage to face the challenges ahead without shrinking back. Remind us that Your presence is our strength. Help us to be bold in our faith, our families, and our work. In Jesus\u2019 name, Amen.` },
+        { date: "2026-02-27", theme: "Purpose", verse_ref: "Romans 8:28", verse_html: `<p>And we know that God causes everything to work together for the good of those who love God and are called according to his purpose for them.</p>`, context: `Paul wrote Romans around AD 57 from Corinth as a theological masterwork to the church in Rome. This verse sits within a passage about suffering and hope. The Greek word for \u201cwork together\u201d (synergei) is the root of \u201csynergy\u201d \u2014 God orchestrates all circumstances, even painful ones, into a cohesive good.`, takeaway: `This verse doesn\u2019t say everything that happens is good \u2014 it says God works all things together for good. The distinction matters. Pain, setbacks, and loss are real, but in God\u2019s hands they become raw material for something purposeful.`, reflection: `Looking back, can you identify a difficult season that ultimately shaped you in a way you\u2019re now grateful for?`, application: `If you\u2019re in a hard season right now, write down one sentence about what you hope God might be building through it. Keep it where you can see it this week.`, prayer: `Father, thank You for working all things together for our good, even when we can\u2019t see the full picture. Help us trust Your purpose in every season. Give us eyes to see Your hand at work. In Jesus\u2019 name, Amen.` },
+        { date: "2026-02-26", theme: "Peace", verse_ref: "Psalm 46:10", verse_html: `<p>\u201cBe still, and know that I am God! I will be honored by every nation. I will be honored throughout the world.\u201d</p>`, context: `This psalm was written by the Sons of Korah, likely during a period of national crisis \u2014 possibly the Assyrian siege of Jerusalem around 701 BC. The Hebrew for \u201cbe still\u201d (raphah) literally means \u201clet go\u201d or \u201crelease your grip.\u201d It\u2019s not about quiet meditation \u2014 it\u2019s a command to stop striving and recognize God\u2019s sovereignty in the midst of chaos.`, takeaway: `Stillness before God is not passivity \u2014 it\u2019s a deliberate act of surrender. In a world that rewards hustle and control, this verse reminds us that knowing God is enough, and He doesn\u2019t need our anxious effort to accomplish His purposes.`, reflection: `Where in your life are you gripping too tightly instead of trusting God to handle it?`, application: `Set a five-minute timer today. Sit in silence \u2014 no phone, no music \u2014 and simply breathe and repeat, \u201cYou are God, and I am not.\u201d`, prayer: `Lord, quiet the noise in our minds and help us release what we\u2019re holding too tightly. Teach us to be still \u2014 to trust that You are in control when everything around us feels uncertain. In Jesus\u2019 name, Amen.` },
+        { date: "2026-02-25", theme: "Wisdom", verse_ref: "James 1:5", verse_html: `<p>If you need wisdom, ask our generous God, and he will give it to you. He will not rebuke you for asking.</p>`, context: `James, the half-brother of Jesus, wrote this letter around AD 45\u201349 to Jewish Christians scattered across the Roman Empire. The Greek word for \u201cwisdom\u201d (sophia) in this context means practical, applied wisdom for daily living \u2014 not abstract philosophy. James emphasizes that God gives wisdom \u201cgenerously\u201d (haplos), meaning simply and without strings attached.`, takeaway: `You don\u2019t have to figure everything out on your own. God invites you to ask for wisdom without shame or hesitation. He won\u2019t judge you for not already knowing \u2014 He\u2019ll simply give you what you need.`, reflection: `What decision are you facing right now where you could use wisdom beyond your own experience?`, application: `Before making your next significant decision today \u2014 at work, with family, or personally \u2014 pause for 10 seconds and silently ask God for wisdom first.`, prayer: `Father, we humbly ask for Your wisdom today. Thank You that You give generously and without judgment. Help us to pause and seek Your guidance before we act, trusting that You will direct our steps. In Jesus\u2019 name, Amen.` },
       ]
     };
     /*DATA_END*/
 
     // ── RENDER ──
+    let viewingArchive = false;
     function formatDate(s) {
       const d = new Date(s + 'T12:00:00');
       return d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
@@ -485,47 +515,79 @@
       return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
     }
 
-    function render(data) {
-      const t = data.today;
-      document.getElementById('todayDate').textContent = formatDate(t.date);
+    function renderDevotional(entry, isToday) {
+      const label = isToday ? "Today\u2019s Scripture" : formatDate(entry.date);
+      document.getElementById('todayDate').textContent = formatDate(entry.date);
       document.getElementById('devotionalContent').innerHTML = `
-        <div class="theme-badge"><span class="dot"></span>${t.theme}</div>
+        <div class="theme-badge"><span class="dot"></span>${entry.theme}</div>
         <div class="scripture-card">
-          <div class="scripture-label">Today\u2019s Scripture</div>
-          <div class="scripture-text">${t.verse_html}</div>
-          <div class="scripture-ref">\u2014 ${t.verse_ref}</div>
+          <div class="scripture-label">${label}</div>
+          <div class="scripture-text">${entry.verse_html}</div>
+          <div class="scripture-ref">\u2014 ${entry.verse_ref}</div>
           <div class="translation-note">New Living Translation (NLT)</div>
         </div>
         <div class="study-card">
           <h3><span class="icon">\ud83d\udcd6</span> Historical Context</h3>
-          <div class="study-content"><p>${t.context}</p></div>
+          <div class="study-content"><p>${entry.context}</p></div>
         </div>
         <div class="study-card">
           <h3><span class="icon">\ud83d\udca1</span> Key Takeaway</h3>
-          <div class="study-content"><p>${t.takeaway}</p></div>
+          <div class="study-content"><p>${entry.takeaway}</p></div>
         </div>
         <div class="reflection-card">
           <h3>\ud83e\udd14 Reflection Question</h3>
-          <p class="reflection-question">${t.reflection}</p>
+          <p class="reflection-question">${entry.reflection}</p>
         </div>
         <div class="application-card">
           <h3>\ud83c\udfaf Today\u2019s Application</h3>
-          <p>${t.application}</p>
+          <p>${entry.application}</p>
         </div>
         <div class="prayer-card">
           <h3>\ud83d\ude4f Family Prayer</h3>
-          <p class="prayer-text">${t.prayer}</p>
+          <p class="prayer-text">${entry.prayer}</p>
         </div>
       `;
+    }
+
+    function renderArchive(data, activeIdx) {
       if (data.archive && data.archive.length > 0) {
         document.getElementById('archiveSection').style.display = 'block';
-        document.getElementById('archiveList').innerHTML = data.archive.map(a => `
-          <div class="archive-item">
-            <div><span class="archive-date">${fmtShort(a.date)}</span><span class="archive-ref">${a.ref}</span></div>
-            <span class="archive-theme">${a.theme}</span>
+        document.getElementById('archiveList').innerHTML = data.archive.map((a, i) => `
+          <div class="archive-item${i === activeIdx ? ' active' : ''}" onclick="showArchive(${i})">
+            <div><span class="archive-date">${fmtShort(a.date)}</span><span class="archive-ref">${a.verse_ref}</span></div>
+            <div style="display:flex;align-items:center;">
+              <span class="archive-theme">${a.theme}</span>
+              <span class="archive-arrow">\u203a</span>
+            </div>
           </div>
         `).join('');
       }
+    }
+
+    function showArchive(idx) {
+      viewingArchive = true;
+      const entry = DEVOTIONAL_DATA.archive[idx];
+      renderDevotional(entry, false);
+      renderArchive(DEVOTIONAL_DATA, idx);
+      document.getElementById('backToToday').classList.add('visible');
+      const banner = document.getElementById('viewingBanner');
+      banner.textContent = 'Viewing: ' + formatDate(entry.date);
+      banner.classList.add('visible');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showToday() {
+      viewingArchive = false;
+      renderDevotional(DEVOTIONAL_DATA.today, true);
+      renderArchive(DEVOTIONAL_DATA, -1);
+      document.getElementById('backToToday').classList.remove('visible');
+      document.getElementById('viewingBanner').classList.remove('visible');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function render(data) {
+      renderDevotional(data.today, true);
+      renderArchive(data, -1);
     }
 
     render(DEVOTIONAL_DATA);
