@@ -554,7 +554,7 @@
         document.getElementById('archiveSection').style.display = 'block';
         document.getElementById('archiveList').innerHTML = data.archive.map((a, i) => `
           <div class="archive-item${i === activeIdx ? ' active' : ''}" onclick="showArchive(${i})">
-            <div><span class="archive-date">${fmtShort(a.date)}</span><span class="archive-ref">${a.verse_ref}</span></div>
+            <div><span class="archive-date">${fmtShort(a.date)}</span><span class="archive-ref">${a.verse_ref || a.ref}</span></div>
             <div style="display:flex;align-items:center;">
               <span class="archive-theme">${a.theme}</span>
               <span class="archive-arrow">\u203a</span>
@@ -567,7 +567,30 @@
     function showArchive(idx) {
       viewingArchive = true;
       const entry = DEVOTIONAL_DATA.archive[idx];
-      renderDevotional(entry, false);
+      const verseRef = entry.verse_ref || entry.ref;
+      // Archive entries may be full devotionals or lightweight summaries
+      if (entry.verse_html && entry.context) {
+        renderDevotional(entry, false);
+      } else {
+        // Lightweight archive entry — show a clean summary card
+        document.getElementById('todayDate').textContent = formatDate(entry.date);
+        document.getElementById('devotionalContent').innerHTML = `
+          <div class="theme-badge"><span class="dot"></span>${entry.theme}</div>
+          <div class="scripture-card">
+            <div class="scripture-label">${formatDate(entry.date)}</div>
+            <div class="scripture-text" style="font-style:italic;opacity:0.85;">
+              <p>Full devotional content is only available on the day it is published.</p>
+            </div>
+            <div class="scripture-ref">\u2014 ${verseRef}</div>
+            <div class="translation-note">New Living Translation (NLT)</div>
+          </div>
+          <div class="study-card" style="text-align:center;">
+            <h3><span class="icon">\ud83d\udcd6</span> ${verseRef}</h3>
+            <div class="study-content"><p>Theme: <strong>${entry.theme}</strong></p>
+            <p style="margin-top:0.75rem;opacity:0.7;">Revisit this passage on your own or look it up in your Bible to reflect on it again.</p></div>
+          </div>
+        `;
+      }
       renderArchive(DEVOTIONAL_DATA, idx);
       document.getElementById('backToToday').classList.add('visible');
       const banner = document.getElementById('viewingBanner');
