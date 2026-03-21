@@ -23,6 +23,17 @@
       --white: #FFFFFF;
       --accent: #6B7F5E;
       --accent-light: #E8EDE4;
+      --radius: 16px;
+      --shadow-sm: 0 2px 12px rgba(44,36,22,0.06);
+      --shadow-md: 0 4px 24px rgba(44,36,22,0.08);
+      --shadow-lg: 0 8px 32px rgba(44,36,22,0.12);
+      /* Text size system */
+      --text-scripture: 1.4rem;
+      --text-body: 0.95rem;
+      --text-heading: 1.2rem;
+      --text-reflection: 1.12rem;
+      --text-prayer: 1.05rem;
+      --text-line-height: 1.72;
     }
     body {
       font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -30,6 +41,23 @@
       color: var(--ink);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+    }
+    /* Text size variants */
+    body.text-small {
+      --text-scripture: 1.2rem;
+      --text-body: 0.85rem;
+      --text-heading: 1.05rem;
+      --text-reflection: 0.98rem;
+      --text-prayer: 0.92rem;
+      --text-line-height: 1.65;
+    }
+    body.text-large {
+      --text-scripture: 1.7rem;
+      --text-body: 1.1rem;
+      --text-heading: 1.4rem;
+      --text-reflection: 1.3rem;
+      --text-prayer: 1.2rem;
+      --text-line-height: 1.82;
     }
     .top-accent { height: 4px; background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light), var(--gold), var(--gold-dark)); }
 
@@ -71,11 +99,17 @@
       margin-top: 0.25rem;
     }
 
-    .date-bar {
+    /* Settings bar (replaces date-bar) */
+    .settings-bar {
       background: var(--white);
       border-bottom: 1px solid var(--cream-dark);
-      text-align: center;
-      padding: 0.7rem 1rem;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
     .date-display {
       font-family: 'Cormorant Garamond', Georgia, serif;
@@ -84,6 +118,59 @@
       color: var(--gold-dark);
       font-style: italic;
     }
+    .settings-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Text size toggle */
+    .text-size-toggle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--cream);
+      border-radius: 8px;
+      padding: 3px;
+      border: 1px solid var(--cream-dark);
+    }
+    .text-size-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      color: var(--ink-muted);
+      transition: all 0.2s ease;
+      line-height: 1;
+    }
+    .text-size-btn.active {
+      background: var(--white);
+      color: var(--gold-dark);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .text-size-btn:hover:not(.active) { color: var(--ink-light); }
+    .ts-small { font-size: 0.75rem; }
+    .ts-medium { font-size: 0.95rem; }
+    .ts-large { font-size: 1.15rem; }
+
+    /* View mode toggle */
+    .view-toggle {
+      border: none;
+      background: var(--cream);
+      border: 1px solid var(--cream-dark);
+      border-radius: 8px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+      transition: all 0.2s ease;
+    }
+    .view-toggle:hover { color: var(--gold-dark); }
 
     .container { max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 
@@ -97,7 +184,7 @@
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 0.3rem 0.85rem;
+      padding: 0.35rem 0.9rem;
       border-radius: 2rem;
       margin-bottom: 1.2rem;
     }
@@ -106,9 +193,9 @@
     /* Scripture */
     .scripture-card {
       background: var(--white);
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 1.8rem 1.6rem;
-      box-shadow: 0 4px 24px rgba(44,36,22,0.07);
+      box-shadow: var(--shadow-md);
       margin-bottom: 1.4rem;
       position: relative;
       overflow: hidden;
@@ -130,7 +217,7 @@
     }
     .scripture-text {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.4rem;
+      font-size: var(--text-scripture);
       font-weight: 500;
       line-height: 1.6;
       color: var(--ink);
@@ -149,14 +236,14 @@
     /* Study cards */
     .study-card {
       background: var(--white);
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 1.6rem 1.5rem;
-      box-shadow: 0 4px 24px rgba(44,36,22,0.07);
+      box-shadow: var(--shadow-sm);
       margin-bottom: 1.4rem;
     }
     .study-card h3 {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.2rem;
+      font-size: var(--text-heading);
       font-weight: 600;
       color: var(--ink);
       margin-bottom: 0.8rem;
@@ -166,15 +253,15 @@
     }
     .study-card h3 .icon { color: var(--gold); }
     .study-content p {
-      font-size: 0.93rem;
-      line-height: 1.72;
+      font-size: var(--text-body);
+      line-height: var(--text-line-height);
       color: var(--ink-light);
     }
 
     .reflection-card {
       background: linear-gradient(135deg, var(--cream) 0%, var(--cream-dark) 100%);
       border: 1px solid var(--cream-dark);
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 1.6rem;
       margin-bottom: 1.4rem;
     }
@@ -187,7 +274,7 @@
     }
     .reflection-question {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.12rem;
+      font-size: var(--text-reflection);
       font-style: italic;
       color: var(--ink-light);
       line-height: 1.55;
@@ -196,42 +283,107 @@
     .application-card {
       background: var(--white);
       border-left: 3px solid var(--gold);
-      border-radius: 0 12px 12px 0;
+      border-radius: 0 var(--radius) var(--radius) 0;
       padding: 1.4rem 1.5rem;
-      box-shadow: 0 2px 16px rgba(44,36,22,0.05);
+      box-shadow: var(--shadow-sm);
       margin-bottom: 1.4rem;
     }
     .application-card h3 {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.05rem;
+      font-size: var(--text-heading);
       font-weight: 600;
       color: var(--ink);
       margin-bottom: 0.5rem;
     }
-    .application-card p { font-size: 0.9rem; line-height: 1.65; color: var(--ink-light); }
+    .application-card p { font-size: var(--text-body); line-height: var(--text-line-height); color: var(--ink-light); }
 
     .prayer-card {
       background: var(--white);
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 1.6rem;
-      box-shadow: 0 2px 16px rgba(44,36,22,0.05);
+      box-shadow: var(--shadow-sm);
       text-align: center;
       margin-bottom: 1.4rem;
     }
     .prayer-card h3 {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.1rem;
+      font-size: var(--text-heading);
       font-weight: 600;
       color: var(--ink);
       margin-bottom: 0.7rem;
     }
     .prayer-text {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.02rem;
+      font-size: var(--text-prayer);
       font-style: italic;
-      line-height: 1.65;
+      line-height: var(--text-line-height);
       color: var(--ink-light);
     }
+
+    /* Step Navigation */
+    .step-nav {
+      margin-bottom: 1.2rem;
+    }
+    .step-progress {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 0.8rem;
+    }
+    .step-dot {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--cream-dark);
+      transition: background 0.35s ease;
+      cursor: pointer;
+    }
+    .step-dot.completed { background: var(--gold); }
+    .step-dot.active { background: var(--gold-dark); }
+    .step-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      text-align: center;
+    }
+    .step-content {
+      animation: stepFadeIn 0.35s ease-out;
+    }
+    @keyframes stepFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .step-buttons {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.2rem;
+    }
+    .step-btn {
+      flex: 1;
+      border: none;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .step-btn:active { transform: scale(0.97); }
+    .step-btn-back {
+      background: var(--cream);
+      color: var(--ink-muted);
+      border: 1px solid var(--cream-dark);
+    }
+    .step-btn-back:hover { background: var(--cream-dark); color: var(--ink-light); }
+    .step-btn-next {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: var(--white);
+      box-shadow: 0 2px 12px rgba(200,169,110,0.3);
+    }
+    .step-btn-next:hover { box-shadow: 0 4px 16px rgba(200,169,110,0.4); }
 
     /* Photo Gallery */
     .gallery-section {
@@ -249,9 +401,9 @@
     }
     .gallery-carousel {
       position: relative;
-      border-radius: 12px;
+      border-radius: var(--radius);
       overflow: hidden;
-      box-shadow: 0 4px 24px rgba(44,36,22,0.1);
+      box-shadow: var(--shadow-lg);
       background: var(--ink);
     }
     .gallery-carousel img {
@@ -279,7 +431,7 @@
       gap: 0.4rem;
       padding: 0.7rem 0;
       background: var(--white);
-      border-radius: 0 0 12px 12px;
+      border-radius: 0 0 var(--radius) var(--radius);
     }
     .gallery-dot {
       width: 7px;
@@ -301,86 +453,119 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--ink-muted);
-      margin-bottom: 0.7rem;
+      margin-bottom: 0.6rem;
     }
-    .archive-list { display: flex; flex-direction: column; gap: 0.45rem; }
-    .archive-item {
+    .archive-list {
       background: var(--white);
-      border-radius: 10px;
-      padding: 0.85rem 1.2rem;
-      box-shadow: 0 2px 16px rgba(44,36,22,0.05);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .archive-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--cream);
       cursor: pointer;
-      transition: all 0.2s ease;
-      border: 2px solid transparent;
+      transition: background 0.2s;
     }
-    .archive-item:hover { border-color: var(--gold-light); box-shadow: 0 4px 20px rgba(200,169,110,0.15); }
-    .archive-item:active { transform: scale(0.98); }
-    .archive-item.active { border-color: var(--gold); background: var(--cream); }
-    .archive-date { font-size: 0.8rem; font-weight: 600; color: var(--ink); }
-    .archive-ref {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 0.88rem;
-      color: var(--ink-muted);
-      font-style: italic;
-      margin-left: 0.4rem;
+    .archive-item:last-child { border-bottom: none; }
+    .archive-item:hover, .archive-item.active { background: var(--cream); }
+    .archive-date { font-weight: 600; color: var(--ink); font-size: 0.88rem; margin-right: 0.6rem; }
+    .archive-ref { color: var(--ink-muted); font-size: 0.82rem; }
+    .archive-theme {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 1rem;
     }
-    .archive-theme { font-size: 0.68rem; color: var(--accent); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
-    .archive-item .archive-arrow {
-      font-size: 0.9rem; color: var(--gold); margin-left: 0.5rem;
-      transition: transform 0.2s ease;
-    }
-    .archive-item:hover .archive-arrow { transform: translateX(3px); }
+    .archive-arrow { color: var(--ink-muted); font-size: 1.3rem; margin-left: 0.6rem; }
+
+    /* Back to Today */
     .back-to-today {
-      display: none; align-items: center; justify-content: center; gap: 0.5rem;
-      background: var(--gold); color: var(--white); border: none; border-radius: 2rem;
-      padding: 0.7rem 1.6rem; font-family: 'Source Sans 3', sans-serif;
-      font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em; cursor: pointer;
-      margin: 0 auto 1.4rem; transition: all 0.2s ease;
-      box-shadow: 0 3px 12px rgba(200,169,110,0.3);
+      display: none;
+      background: var(--gold);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      padding: 0.55rem 1.2rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 0.7rem;
+      transition: background 0.2s;
     }
-    .back-to-today:hover { background: var(--gold-dark); box-shadow: 0 4px 16px rgba(200,169,110,0.45); }
-    .back-to-today.visible { display: flex; }
+    .back-to-today.visible { display: inline-block; }
+    .back-to-today:hover { background: var(--gold-dark); }
     .viewing-banner {
-      display: none; text-align: center; padding: 0.5rem 1rem;
-      background: var(--cream-dark); border-radius: 8px; margin-bottom: 1rem;
-      font-size: 0.78rem; color: var(--ink-muted); font-style: italic;
+      display: none;
+      background: var(--cream-dark);
+      color: var(--ink-muted);
+      text-align: center;
+      padding: 0.4rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
     }
     .viewing-banner.visible { display: block; }
 
+    /* Install hint */
     .install-hint {
       background: var(--white);
-      border: 1px dashed var(--gold-light);
-      border-radius: 10px;
-      padding: 0.8rem 1.2rem;
-      margin-bottom: 1.3rem;
+      border: 1px solid var(--cream-dark);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
       text-align: center;
-      font-size: 0.8rem;
-      color: var(--ink-muted);
-      line-height: 1.4;
+      font-size: 0.82rem;
+      color: var(--ink-light);
+      margin-bottom: 1.2rem;
+      line-height: 1.5;
     }
-    .install-hint strong { color: var(--ink-light); }
     .dismiss-hint {
-      background: none; border: none; color: var(--gold-dark);
-      font-size: 0.76rem; font-weight: 600; cursor: pointer;
-      margin-top: 0.3rem; padding: 0.2rem 0.5rem;
+      background: none;
+      border: 1px solid var(--cream-dark);
+      border-radius: 6px;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+      cursor: pointer;
+      margin-top: 0.3rem;
     }
 
+    /* Footer */
     .site-footer {
-      text-align: center;
+      background: var(--cream-dark);
+      border-top: 1px solid #E0D6C4;
       padding: 1.5rem 1rem;
-      border-top: 1px solid var(--cream-dark);
-      margin-top: 0.5rem;
+      text-align: center;
     }
-    .footer-text { font-size: 0.7rem; color: var(--ink-muted); line-height: 1.6; }
+    .footer-text {
+      font-size: 0.68rem;
+      line-height: 1.6;
+      color: var(--ink-muted);
+    }
+    .footer-text a { color: var(--gold-dark); text-decoration: none; }
+    .footer-text a:hover { text-decoration: underline; }
+    .vn {
+      font-size: 0.65em;
+      vertical-align: super;
+      color: var(--ink-muted);
+      margin-right: 0.15em;
+      font-weight: 600;
+    }
 
-    @media (max-width: 480px) {
+    @media (max-width: 600px) {
       .hero img { height: 320px; object-position: center 20%; }
       .hero-title { font-size: 2rem; }
       .hero-overlay { padding: 2.5rem 1.2rem 1.2rem; }
-      .scripture-text { font-size: 1.22rem; }
+      .scripture-text { font-size: var(--text-scripture); }
       .scripture-card, .study-card { padding: 1.3rem 1.1rem; }
       .container { padding: 1rem 0.75rem 2.5rem; }
       .gallery-carousel img { height: 240px; }
@@ -398,8 +583,16 @@
     </div>
   </div>
 
-  <div class="date-bar">
+  <div class="settings-bar">
     <p class="date-display" id="todayDate"></p>
+    <div class="settings-right">
+      <div class="text-size-toggle" id="textSizeToggle">
+        <button class="text-size-btn ts-small" data-size="small" onclick="setTextSize('small')" aria-label="Small text">A</button>
+        <button class="text-size-btn ts-medium active" data-size="medium" onclick="setTextSize('medium')" aria-label="Medium text">A</button>
+        <button class="text-size-btn ts-large" data-size="large" onclick="setTextSize('large')" aria-label="Large text">A</button>
+      </div>
+      <button class="view-toggle" id="viewToggle" onclick="toggleViewMode()">SCROLL</button>
+    </div>
   </div>
 
   <main class="container">
@@ -564,6 +757,50 @@ date: "2026-03-19",
     };
     /*DATA_END*/
 
+    // ── TEXT SIZE ──
+    function setTextSize(size) {
+      document.body.classList.remove('text-small', 'text-large');
+      if (size === 'small') document.body.classList.add('text-small');
+      else if (size === 'large') document.body.classList.add('text-large');
+      // Update toggle buttons
+      document.querySelectorAll('.text-size-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.size === size);
+      });
+      try { localStorage.setItem('byrd-text-size', size); } catch(e) {}
+    }
+    // Restore saved text size
+    (function() {
+      try {
+        var saved = localStorage.getItem('byrd-text-size');
+        if (saved && saved !== 'medium') setTextSize(saved);
+      } catch(e) {}
+    })();
+
+    // ── VIEW MODE ──
+    var viewMode = 'steps'; // 'steps' or 'scroll'
+    var currentStep = 0;
+    var currentEntry = null;
+    var currentIsToday = true;
+    var STEP_NAMES = ['Scripture', 'Context', 'Takeaway', 'Reflection', 'Application', 'Prayer'];
+
+    function toggleViewMode() {
+      viewMode = viewMode === 'steps' ? 'scroll' : 'steps';
+      document.getElementById('viewToggle').textContent = viewMode === 'steps' ? 'SCROLL' : 'GUIDED';
+      try { localStorage.setItem('byrd-view-mode', viewMode); } catch(e) {}
+      if (currentEntry) renderDevotional(currentEntry, currentIsToday);
+    }
+    // Restore saved view mode
+    (function() {
+      try {
+        var saved = localStorage.getItem('byrd-view-mode');
+        if (saved === 'scroll') {
+          viewMode = 'scroll';
+          var btn = document.getElementById('viewToggle');
+          if (btn) btn.textContent = 'GUIDED';
+        }
+      } catch(e) {}
+    })();
+
     // ── RENDER ──
     let viewingArchive = false;
     function formatDate(s) {
@@ -575,38 +812,114 @@ date: "2026-03-19",
       return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
     }
 
+    function buildSectionHTML(entry, label) {
+      return {
+        scripture: '<div class="scripture-card">'
+          + '<div class="scripture-label">' + label + '</div>'
+          + '<div class="scripture-text">' + entry.verse_html + '</div>'
+          + '<div class="scripture-ref">\u2014 ' + entry.verse_ref + '</div>'
+          + '<div class="translation-note">New Living Translation (NLT)</div>'
+          + '</div>',
+        context: '<div class="study-card">'
+          + '<h3><span class="icon">\ud83d\udcd6</span> Historical Context</h3>'
+          + '<div class="study-content"><p>' + entry.context + '</p></div>'
+          + '</div>',
+        takeaway: '<div class="study-card">'
+          + '<h3><span class="icon">\ud83d\udca1</span> Key Takeaway</h3>'
+          + '<div class="study-content"><p>' + entry.takeaway + '</p></div>'
+          + '</div>',
+        reflection: '<div class="reflection-card">'
+          + '<h3>\ud83e\udd14 Reflection Question</h3>'
+          + '<p class="reflection-question">' + entry.reflection + '</p>'
+          + '</div>',
+        application: '<div class="application-card">'
+          + '<h3>\ud83c\udfaf Today\u2019s Application</h3>'
+          + '<p>' + entry.application + '</p>'
+          + '</div>',
+        prayer: '<div class="prayer-card">'
+          + '<h3>\ud83d\ude4f Family Prayer</h3>'
+          + '<p class="prayer-text">' + entry.prayer + '</p>'
+          + '</div>'
+      };
+    }
+
+    function renderStepNav() {
+      var dots = '';
+      for (var i = 0; i < 6; i++) {
+        var cls = i < currentStep ? 'completed' : (i === currentStep ? 'active' : '');
+        dots += '<div class="step-dot ' + cls + '" onclick="goToStep(' + i + ')"></div>';
+      }
+      return '<div class="step-nav">'
+        + '<div class="step-progress">' + dots + '</div>'
+        + '<div class="step-label">' + (currentStep + 1) + ' of 6 \u2014 ' + STEP_NAMES[currentStep] + '</div>'
+        + '</div>';
+    }
+
+    function renderStepButtons() {
+      var html = '<div class="step-buttons">';
+      if (currentStep > 0) {
+        html += '<button class="step-btn step-btn-back" onclick="prevStep()">\u2190 Back</button>';
+      }
+      if (currentStep < 5) {
+        html += '<button class="step-btn step-btn-next" onclick="nextStep()">Next \u2192</button>';
+      } else {
+        html += '<button class="step-btn step-btn-next" onclick="currentStep=0;renderDevotional(currentEntry,currentIsToday);">\u2714 Start Over</button>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function nextStep() {
+      if (currentStep < 5) { currentStep++; renderDevotional(currentEntry, currentIsToday); }
+    }
+    function prevStep() {
+      if (currentStep > 0) { currentStep--; renderDevotional(currentEntry, currentIsToday); }
+    }
+    function goToStep(idx) {
+      currentStep = idx;
+      renderDevotional(currentEntry, currentIsToday);
+    }
+
+    // Swipe support
+    var touchStartX = 0;
+    var touchEndX = 0;
+    document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; }, false);
+    document.addEventListener('touchend', function(e) {
+      if (viewMode !== 'steps') return;
+      touchEndX = e.changedTouches[0].screenX;
+      var diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 60) {
+        if (diff > 0 && currentStep < 5) nextStep();
+        else if (diff < 0 && currentStep > 0) prevStep();
+      }
+    }, false);
+
     function renderDevotional(entry, isToday) {
+      currentEntry = entry;
+      currentIsToday = isToday;
       const label = isToday ? "Today\u2019s Scripture" : formatDate(entry.date);
       document.getElementById('todayDate').textContent = formatDate(entry.date);
-      document.getElementById('devotionalContent').innerHTML = `
-        <div class="theme-badge"><span class="dot"></span>${entry.theme}</div>
-        <div class="scripture-card">
-          <div class="scripture-label">${label}</div>
-          <div class="scripture-text">${entry.verse_html}</div>
-          <div class="scripture-ref">\u2014 ${entry.verse_ref}</div>
-          <div class="translation-note">New Living Translation (NLT)</div>
-        </div>
-        <div class="study-card">
-          <h3><span class="icon">\ud83d\udcd6</span> Historical Context</h3>
-          <div class="study-content"><p>${entry.context}</p></div>
-        </div>
-        <div class="study-card">
-          <h3><span class="icon">\ud83d\udca1</span> Key Takeaway</h3>
-          <div class="study-content"><p>${entry.takeaway}</p></div>
-        </div>
-        <div class="reflection-card">
-          <h3>\ud83e\udd14 Reflection Question</h3>
-          <p class="reflection-question">${entry.reflection}</p>
-        </div>
-        <div class="application-card">
-          <h3>\ud83c\udfaf Today\u2019s Application</h3>
-          <p>${entry.application}</p>
-        </div>
-        <div class="prayer-card">
-          <h3>\ud83d\ude4f Family Prayer</h3>
-          <p class="prayer-text">${entry.prayer}</p>
-        </div>
-      `;
+
+      var sections = buildSectionHTML(entry, label);
+      var keys = ['scripture', 'context', 'takeaway', 'reflection', 'application', 'prayer'];
+      var themeHTML = '<div class="theme-badge"><span class="dot"></span>' + entry.theme + '</div>';
+
+      if (viewMode === 'scroll') {
+        // Scroll mode — show everything
+        document.getElementById('devotionalContent').innerHTML = themeHTML
+          + sections.scripture
+          + sections.context
+          + sections.takeaway
+          + sections.reflection
+          + sections.application
+          + sections.prayer;
+      } else {
+        // Step mode — show one section
+        document.getElementById('devotionalContent').innerHTML = themeHTML
+          + renderStepNav()
+          + '<div class="step-content">' + sections[keys[currentStep]] + '</div>'
+          + renderStepButtons();
+      }
     }
 
     function renderArchive(data, activeIdx) {
@@ -626,13 +939,12 @@ date: "2026-03-19",
 
     function showArchive(idx) {
       viewingArchive = true;
+      currentStep = 0;
       const entry = DEVOTIONAL_DATA.archive[idx];
       const verseRef = entry.verse_ref || entry.ref;
-      // Archive entries may be full devotionals or lightweight summaries
       if (entry.verse_html && entry.context) {
         renderDevotional(entry, false);
       } else {
-        // Lightweight archive entry — show a clean summary card
         document.getElementById('todayDate').textContent = formatDate(entry.date);
         document.getElementById('devotionalContent').innerHTML = `
           <div class="theme-badge"><span class="dot"></span>${entry.theme}</div>
@@ -661,6 +973,7 @@ date: "2026-03-19",
 
     function showToday() {
       viewingArchive = false;
+      currentStep = 0;
       renderDevotional(DEVOTIONAL_DATA.today, true);
       renderArchive(DEVOTIONAL_DATA, -1);
       document.getElementById('backToToday').classList.remove('visible');
