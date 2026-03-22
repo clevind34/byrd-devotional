@@ -1,0 +1,55 @@
+name: Daily Devotional
+
+on:
+  schedule:
+    # 2:00 AM Eastern (7:00 AM UTC during EDT, 7:00 AM UTC during EST)
+    - cron: '0 7 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  generate-devotional:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install anthropic requests
+
+      - name: Generate and publish devotional
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NLT_API_KEY: "TEST"
+        run: python generate_devotional.py
+
+      - name: Commit and push
+        run: |
+          git config user.email "devotional@byrdfamily.com"
+          git config user.name "Byrd Devotional Bot"
+          git add index.html
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          DATE=$(date -u +%Y-%m-%d)
+          VERSE_REF=$(python3 -c "
+          from datetime import date, timezone, timedelta
+          import json
+          et = timezone(timedelta(hours=-4))
+          today = date.today()
+          themes = ['Faith & Trust','Wisdom','Courage','Family','Peace','Purpose','Perseverance','Gratitude','Leadership','Generosity','Forgiveness','Hope']
+          day_of_year = today.timetuple().tm_yday
+          theme = themes[(day_of_year * 7) % 12]
+          print(theme)
+          ")
+          git commit -m "Daily devotional: ${DATE} - ${VERSE_REF}"
+          git push origin main
