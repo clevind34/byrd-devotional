@@ -213,27 +213,60 @@ def update_index_html(today_str, theme, verse_ref, verse_html, content):
 
     current_data = html[start_idx:end_idx]
 
-    # Extract current today block for archiving
-    today_block_start = current_data.index("today: {") + len("today: {")
-    # Find the closing brace of the today block
-    brace_depth = 1
-    i = today_block_start
-    while brace_depth > 0 and i < len(current_data):
-        if current_data[i] == '{':
-            brace_depth += 1
-        elif current_data[i] == '}':
-            brace_depth -= 1
-        i += 1
-    today_block_end = i - 1  # position of closing brace
-    yesterday_content = current_data[today_block_start:today_block_end].strip()
+    # Extract current today's field values for archiving
+    # Uses regex to pull each field — more robust than brace-counting raw text
+    def extract_field(data, field_name, use_backtick=False):
+        """Extract a field value from the today block."""
+        if use_backtick:
+            # Match: field_name: `...` (template literal, may span lines)
+            pattern = field_name + r': `((?:[^`\\]|\\[\\`$])*)`'
+            m = re.search(pattern, data, re.DOTALL)
+        else:
+            # Match: field_name: "..."
+            pattern = field_name + r': "([^"]*)"'
+            m = re.search(pattern, data)
+        return m.group(1) if m else ""
 
-    # Extract archive entries
+    # Extract today block boundaries to limit search scope
+    today_start = current_data.index("today: {")
+    archive_marker = current_data.index("archive: [")
+    today_section = current_data[today_start:archive_marker]
+
+    yesterday = {
+        "date": extract_field(today_section, "date"),
+        "theme": extract_field(today_section, "theme"),
+        "verse_ref": extract_field(today_section, "verse_ref"),
+        "verse_html": extract_field(today_section, "verse_html", True),
+        "context": extract_field(today_section, "context", True),
+        "takeaway": extract_field(today_section, "takeaway", True),
+        "reflection": extract_field(today_section, "reflection", True),
+        "application": extract_field(today_section, "application", True),
+        "prayer": extract_field(today_section, "prayer", True),
+    }
+
+    def format_entry(entry, indent="        "):
+        """Format a devotional entry as a JS object with consistent indentation."""
+        return (
+            f'{indent}{{\n'
+            f'{indent}  date: "{entry["date"]}",\n'
+            f'{indent}  theme: "{entry["theme"]}",\n'
+            f'{indent}  verse_ref: "{entry["verse_ref"]}",\n'
+            f'{indent}  verse_html: `{entry["verse_html"]}`,\n'
+            f'{indent}  context: `{entry["context"]}`,\n'
+            f'{indent}  takeaway: `{entry["takeaway"]}`,\n'
+            f'{indent}  reflection: `{entry["reflection"]}`,\n'
+            f'{indent}  application: `{entry["application"]}`,\n'
+            f'{indent}  prayer: `{entry["prayer"]}`\n'
+            f'{indent}}}'
+        )
+
+    # Extract archive entries using the same field-based approach
     archive_start = current_data.index("archive: [") + len("archive: [")
     archive_end = current_data.rindex("]")
     archive_content = current_data[archive_start:archive_end].strip()
 
-    # Parse archive entries by matching braces
-    entries = []
+    # Parse archive entries by matching braces, then extract fields from each
+    raw_entries = []
     if archive_content:
         depth = 0
         entry_start = None
@@ -245,15 +278,27 @@ def update_index_html(today_str, theme, verse_ref, verse_html, content):
             elif ch == '}':
                 depth -= 1
                 if depth == 0 and entry_start is not None:
-                    entries.append(archive_content[entry_start:idx + 1])
+                    raw_entries.append(archive_content[entry_start:idx + 1])
                     entry_start = None
 
-    # Build new archive: yesterday + first 5 existing entries = 6 total
-    new_archive_entries = ["        {\n" + yesterday_content + "\n        }"]
-    for entry in entries[:5]:
-        new_archive_entries.append("        " + entry)
+    archive_entries = []
+    for raw in raw_entries:
+        entry = {
+            "date": extract_field(raw, "date"),
+            "theme": extract_field(raw, "theme"),
+            "verse_ref": extract_field(raw, "verse_ref"),
+            "verse_html": extract_field(raw, "verse_html", True),
+            "context": extract_field(raw, "context", True),
+            "takeaway": extract_field(raw, "takeaway", True),
+            "reflection": extract_field(raw, "reflection", True),
+            "application": extract_field(raw, "application", True),
+            "prayer": extract_field(raw, "prayer", True),
+        }
+        archive_entries.append(entry)
 
-    archive_str = ",\n".join(new_archive_entries)
+    # Build new archive: yesterday + first 5 existing entries = 6 total
+    all_archive = [yesterday] + archive_entries[:5]
+    archive_str = ",\n".join(format_entry(e) for e in all_archive)
 
     # Escape content for JS template literals
     vh = escape_for_template_literal(verse_html)
